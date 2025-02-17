@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+import '../models/planet.dart';
+
+class PlanetDetail extends StatelessWidget {
+  final Planet planet;
+
+  PlanetDetail({required this.planet});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(planet.name),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Nome: ${planet.name}'),
+            Text('Distância do Sol: ${planet.distanceFromSun} UA'),
+            Text('Tamanho: ${planet.size} km'),
+            Text('Apelido: ${planet.nickname ?? "N/A"}'),
+          ],
+        ),
+      ),
+    );
+  }
+}
