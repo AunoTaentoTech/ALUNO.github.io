@@ -1,0 +1,22 @@
+import '../models/planet.dart';
+import '../database/db_helper.dart';
+
+class PlanetController {
+  final DBHelper _dbHelper = DBHelper();
+
+  Future<int> addPlanet(Planet planet) async {
+    return await _dbHelper.insertPlanet(planet);
+  }
+
+  Future<List<Planet>> getPlanets() async {
+    return await _dbHelper.getPlanets();
+  }
+
+  Future<int> updatePlanet(Planet planet) async {
+    return await _dbHelper.updatePlanet(planet);
+  }
+
+  Future<int> deletePlanet(int id) async {
+    return await _dbHelper.deletePlanet(id);
+  }
+}
