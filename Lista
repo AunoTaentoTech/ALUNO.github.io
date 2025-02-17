@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+import '../models/planet.dart';
+import '../controllers/planet_controller.dart';
+import 'planet_detail.dart';
+import 'planet_form.dart';
+
+class PlanetList extends StatefulWidget {
+  @override
+  _PlanetListState createState() => _PlanetListState();
+}
+
+class _PlanetListState extends State<PlanetList> {
+  final PlanetController _controller = PlanetController();
+  late Future<List<Planet>> _futurePlanets;
+
+  @override
+  void initState() {
+    super.initState();
+    _futurePlanets = _controller.getPlanets();
+  }
+
+  void _navigateToForm(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PlanetForm()),
+    );
+    setState(() {
+      _futurePlanets = _controller.getPlanets();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Planetas'),
+      ),
+      body: FutureBuilder<List<Planet>>(
+        future: _futurePlanets,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Erro ao carregar planetas'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('Nenhum planeta cadastrado'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                Planet planet = snapshot.data![index];
+                return ListTile(
+                  title: Text(planet.name),
+                  subtitle: Text(planet.nickname ?? 'Sem apelido'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PlanetDetail(planet: planet),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _navigateToForm(context),
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
